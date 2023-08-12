@@ -20,8 +20,6 @@ class _UploadScreenState extends State<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool allowedDownload = context.watch<contentBloc>().state;
-
     return Scaffold(
       appBar: AppBar(title: const Text("Content")),
       body: SingleChildScrollView(
@@ -74,7 +72,7 @@ class _UploadScreenState extends State<UploadScreen> {
             DottedBorder(
               child: InkWell(
                 onTap: () {
-                  uploadFiles();
+                  uploadFiles(context);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -83,22 +81,42 @@ class _UploadScreenState extends State<UploadScreen> {
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        SizedBox(
+                      children: [
+                        const SizedBox(
                           height: kPadding,
                         ),
-                        Icon(
-                          Icons.picture_as_pdf_outlined,
-                          size: 28,
+                        BlocBuilder<ContentFileBloc, String>(
+                          builder: (context, state) {
+                            if (state != "") {
+                              return const Icon(
+                                Icons.file_copy,
+                                size: 28,
+                                color: Colors.green,
+                              );
+                            } else {
+                              return const Icon(
+                                Icons.picture_as_pdf_outlined,
+                                size: 28,
+                              );
+                            }
+                          },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: kPadding / 2,
                         ),
-                        Text(
-                          "Drop your Document here, or click to browse",
-                          style: TextStyle(color: Colors.blue),
+                        BlocBuilder<ContentFileBloc, String>(
+                          builder: (context, state) {
+                            if (state != "") {
+                              return Text(state);
+                            } else {
+                              return const Text(
+                                "Drop your Document here, or click to browse",
+                                style: TextStyle(color: Colors.blue),
+                              );
+                            }
+                          },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: kPadding,
                         )
                       ],
@@ -117,12 +135,12 @@ class _UploadScreenState extends State<UploadScreen> {
                   style: titleStyle,
                 ),
                 const Spacer(),
-                BlocBuilder<contentBloc, bool>(
+                BlocBuilder<ContentSwitchBloc, bool>(
                   builder: (context, state) {
                     return Switch(
-                        value: allowedDownload,
+                        value: state,
                         onChanged: (value) {
-                          BlocProvider.of<contentBloc>(context)
+                          BlocProvider.of<ContentSwitchBloc>(context)
                               .add(UploadAllowDownloadEvent(state));
                         });
                   },

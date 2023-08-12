@@ -18,8 +18,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider(
-          create: (context) => contentBloc(), child: const UploadScreen()),
+      home: MultiBlocProvider(providers: [
+        BlocProvider(
+          create: (context) => ContentSwitchBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ContentFileBloc(),
+        )
+      ], child: const UploadScreen()),
     );
   }
 }
