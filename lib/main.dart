@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:upload_form/bloc/upload_bloc.dart';
 import 'package:upload_form/upload_form.dart';
 
 void main() {
@@ -16,7 +18,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const UploadScreen(),
+      home: BlocProvider(
+          create: (context) => contentBloc(), child: const UploadScreen()),
     );
   }
 }

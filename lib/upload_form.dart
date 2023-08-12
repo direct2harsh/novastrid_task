@@ -1,9 +1,17 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:upload_form/bloc/upload_bloc.dart';
+import 'package:upload_form/bloc/upload_event.dart';
+import 'package:upload_form/bloc/upload_state.dart';
 import 'package:upload_form/constants.dart';
+import 'package:upload_form/services/upload.service.dart';
 import 'package:upload_form/styles.dart';
 
 class UploadScreen extends StatefulWidget {
@@ -15,6 +23,7 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   final HtmlEditorController _htmlEditorController = HtmlEditorController();
+  bool _allowDownload = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,33 +80,37 @@ class _UploadScreenState extends State<UploadScreen> {
               height: kPadding,
             ),
             DottedBorder(
-              radius: Radius.circular(100),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(5)),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
+              child: InkWell(
+                onTap: () {
+                  uploadFiles();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        SizedBox(
+                          height: kPadding,
+                        ),
+                        Icon(
                           Icons.picture_as_pdf_outlined,
                           size: 28,
                         ),
-                        onPressed: () {},
-                      ),
-                      const SizedBox(
-                        height: kPadding / 2,
-                      ),
-                      const Text(
-                        "Drop your Document here, or click to browse",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      const SizedBox(
-                        height: kPadding,
-                      )
-                    ],
+                        SizedBox(
+                          height: kPadding / 2,
+                        ),
+                        Text(
+                          "Drop your Document here, or click to browse",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        SizedBox(
+                          height: kPadding,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -112,7 +125,16 @@ class _UploadScreenState extends State<UploadScreen> {
                   style: titleStyle,
                 ),
                 Spacer(),
-                Switch(value: true, onChanged: (value) {})
+                // BlocBuilder<contentBloc, ContentState>(
+                //   builder: (context, state) {
+                //     return Switch(
+                //         value:state,
+                //         onChanged: (value) {
+                //           BlocProvider.of<contentBloc>(context)
+                //               .add(UploadAllowDownloadEvent(_allowDownload));
+                //         });
+                //   },
+                // )
               ],
             ),
           ]),
